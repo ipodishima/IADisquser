@@ -35,13 +35,13 @@
     self = [super init];
     if (self)
     {
+        // Careful html message is not saved
         self.forumName = [aDecoder decodeObjectForKey:@"forumName"];
         self.authorName = [aDecoder decodeObjectForKey:@"authorName"];
         self.authorAvatar = [aDecoder decodeObjectForKey:@"authorAvatar"];
         self.authorEmail = [aDecoder decodeObjectForKey:@"authorEmail"];
         self.authorURL = [aDecoder decodeObjectForKey:@"authorURL"];
         self.rawMessage = [aDecoder decodeObjectForKey:@"rawMessage"];
-        self.htmlMessage = [aDecoder decodeObjectForKey:@"htmlMessage"];
         self.date = [aDecoder decodeObjectForKey:@"date"];
         self.likes = [aDecoder decodeObjectForKey:@"likes"];
         self.dislikes = [aDecoder decodeObjectForKey:@"dislikes"];
@@ -60,7 +60,6 @@
     [aCoder encodeObject:self.authorEmail forKey:@"authorEmail"];
     [aCoder encodeObject:self.authorURL forKey:@"authorURL"];
     [aCoder encodeObject:self.rawMessage forKey:@"rawMessage"];
-    [aCoder encodeObject:self.htmlMessage forKey:@"htmlMessage"];
     [aCoder encodeObject:self.date forKey:@"date"];
     [aCoder encodeObject:self.likes forKey:@"likes"];
     [aCoder encodeObject:self.dislikes forKey:@"dislikes"];
