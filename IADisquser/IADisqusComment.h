@@ -26,7 +26,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface IADisqusComment : NSObject
+@interface IADisqusComment : NSObject <NSCoding>
 
 @property (nonatomic, copy) NSString *forumName;
 

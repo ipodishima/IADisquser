@@ -30,6 +30,44 @@
 
 @synthesize forumName, authorName, authorAvatar, authorEmail, authorURL, rawMessage, htmlMessage, date, likes, dislikes, ipAddress, threadID;
 
+- (id) initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self)
+    {
+        self.forumName = [aDecoder decodeObjectForKey:@"forumName"];
+        self.authorName = [aDecoder decodeObjectForKey:@"authorName"];
+        self.authorAvatar = [aDecoder decodeObjectForKey:@"authorAvatar"];
+        self.authorEmail = [aDecoder decodeObjectForKey:@"authorEmail"];
+        self.authorURL = [aDecoder decodeObjectForKey:@"authorURL"];
+        self.rawMessage = [aDecoder decodeObjectForKey:@"rawMessage"];
+        self.htmlMessage = [aDecoder decodeObjectForKey:@"htmlMessage"];
+        self.date = [aDecoder decodeObjectForKey:@"date"];
+        self.likes = [aDecoder decodeObjectForKey:@"likes"];
+        self.dislikes = [aDecoder decodeObjectForKey:@"dislikes"];
+        self.ipAddress = [aDecoder decodeObjectForKey:@"ipAddress"];
+        self.threadID = [aDecoder decodeObjectForKey:@"threadID"];
+    }
+    return self;
+}
+
+
+- (void) encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.forumName forKey:@"forumName"];
+    [aCoder encodeObject:self.authorName forKey:@"authorName"];
+    [aCoder encodeObject:self.authorAvatar forKey:@"authorAvatar"];
+    [aCoder encodeObject:self.authorEmail forKey:@"authorEmail"];
+    [aCoder encodeObject:self.authorURL forKey:@"authorURL"];
+    [aCoder encodeObject:self.rawMessage forKey:@"rawMessage"];
+    [aCoder encodeObject:self.htmlMessage forKey:@"htmlMessage"];
+    [aCoder encodeObject:self.date forKey:@"date"];
+    [aCoder encodeObject:self.likes forKey:@"likes"];
+    [aCoder encodeObject:self.dislikes forKey:@"dislikes"];
+    [aCoder encodeObject:self.ipAddress forKey:@"ipAddress"];
+    [aCoder encodeObject:self.threadID forKey:@"threadID"];
+}
+
 - (void)dealloc {
     [forumName release];
     [authorName release];
