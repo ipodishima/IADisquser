@@ -27,6 +27,6 @@
 // Disqus API version 3.0 : http://disqus.com/api/docs/
 
 #define DISQUS_BASE_URL     @"http://disqus.com/api/3.0/"
-#define DISQUS_FORUM_NAME   @"toogeekforpunk"
-#define DISQUS_API_SECRET   @"cGOvbAYKzWXFffL1h2uM1P2jIp3i816FR0tfMpmb5xHeAHbIJQRt1HYN1trZRmZ2"
-#define DISQUS_API_PUBLIC   @"KyaiUKCMWJIPpYXpXr6C3T134MhV3hpqpBrbbaHPorjkp4Mb8FNisVxmcKCz2FTK"
+#define DISQUS_FORUM_NAME   @"lesardoises"
+#define DISQUS_API_SECRET   @"grbhzl3UrTDJwhumzHSsvrqR8mPYCZyC1BUeOZPYep48OLDN1PyUJpbxFkcqgMT6"
+#define DISQUS_API_PUBLIC   @"C1mXYlaY38bjiuwQ25BQoPW89P0xT2x6ee8jes4JTuZZlYDHERuGWo9P7LQDERSz"
