@@ -37,11 +37,11 @@
     AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
     
     // make and send a get request
-    [disqusClient getPath:@"threads/listPosts.json" 
+    [disqusClient getPath:@"threads/listPosts.json"
                parameters:parameters
-                  success:^(id object) {
+                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                       // fetch the json response to a dictionary
-                      NSDictionary *responseDictionary = [object objectFromJSONData];
+                      NSDictionary *responseDictionary = [responseObject objectFromJSONData];
                       
                       // check the code (success is 0)
                       NSNumber *code = [responseDictionary objectForKey:@"code"];
@@ -96,9 +96,7 @@
                               successBlock(comments);
                           }
                       }
-                  }
-                  failure:^(NSHTTPURLResponse *response, NSError *error) {
-                      // pass error to the block
+                  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                       failBlock(error);
                   }];
 }
@@ -145,11 +143,11 @@
     AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
     
     // fire the request
-    [disqusClient getPath:@"threads/details.json" 
-               parameters:parameters 
-                  success:^(id object) {
+    [disqusClient getPath:@"threads/details.json"
+               parameters:parameters
+                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                       // fetch the json response to a dictionary
-                      NSDictionary *responseDictionary = [object objectFromJSONData];
+                      NSDictionary *responseDictionary = [responseObject objectFromJSONData];
                       
                       // get the code
                       NSNumber *code = [responseDictionary objectForKey:@"code"];
@@ -165,8 +163,7 @@
                           NSNumber *threadId = [[responseDictionary objectForKey:@"response"] objectForKey:@"id"];
                           successBlock(threadId);
                       }
-                  }
-                  failure:^(NSHTTPURLResponse *response, NSError *error) {
+                  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                       failBlock(error);
                   }];
 }
@@ -207,9 +204,9 @@
                             comment.authorEmail, @"author_email",
                             comment.rawMessage, @"message",
                             nil] 
-                   success:^(id object) {
+                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
                        // fetch the json response to a dictionary
-                       NSDictionary *responseDictionary = [object objectFromJSONData];
+                       NSDictionary *responseDictionary = [responseObject objectFromJSONData];
                        
                        // check the code (success is 0)
                        NSNumber *code = [responseDictionary objectForKey:@"code"];
@@ -223,9 +220,8 @@
                        } else {
                            successBlock();
                        }
-                   }
-                   failure:^(NSHTTPURLResponse *response, NSError *error) {
-                       NSLog(@"response : %@", [response allHeaderFields]);
+                   } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                       NSLog(@"response : %@", [operation allHeaderFields]);
                        failBlock(error);
                    }];
 }
