@@ -27,11 +27,11 @@
 #import <Foundation/Foundation.h>
 #import "IADisqusComment.h"
 
-typedef void (^DisqusFetchCommentsSuccess)(NSArray *);
+typedef void (^DisqusFetchCommentsSuccess)(NSArray *comments);
 
-typedef void (^DisqusGetThreadIdSuccess)(NSNumber *);
-typedef void (^DisqusPostCommentSuccess)(void);
-typedef void (^DisqusFail)(NSError *);
+typedef void (^DisqusGetThreadIdSuccess)(NSNumber *threadID);
+typedef void (^DisqusPostCommentSuccess)(IADisqusComment* comment, BOOL approved);
+typedef void (^DisqusFail)(NSError *error);
 
 @class IADisqusComment;
 

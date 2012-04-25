@@ -31,7 +31,43 @@
 
 @implementation IADisquser
 
++ (NSDateFormatter*)getThreadAwareDateFormatter
+{
+    NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
+    NSDateFormatter *dateFormatter = [threadDictionary objectForKey: @"IADisquserMyDateFormatter"];
+	if (!dateFormatter)
+    {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale *locale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease];
+        [dateFormatter setLocale:locale];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        [threadDictionary setObject: dateFormatter forKey: @"IADisquserMyDateFormatter"];
+	}
+    return dateFormatter;
+}
+
 #pragma mark - View comments
+
++ (IADisqusComment*) buildCommentFromDictionary:(NSDictionary*)commentDictionary
+{
+    IADisqusComment *aDisqusComment = [[IADisqusComment alloc] init];
+    
+    aDisqusComment.authorName = [[commentDictionary objectForKey:@"author"] objectForKey:@"name"];
+    aDisqusComment.authorAvatar = [[[commentDictionary objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"cache"];
+    aDisqusComment.authorEmail = [[commentDictionary objectForKey:@"author"] objectForKey:@"email"];
+    aDisqusComment.authorURL = [[commentDictionary objectForKey:@"author"] objectForKey:@"url"];
+    aDisqusComment.ipAddress = [commentDictionary objectForKey:@"ipAddress"];
+    aDisqusComment.forumName = [commentDictionary objectForKey:@"forum"];
+    aDisqusComment.likes = [commentDictionary objectForKey:@"likes"];
+    aDisqusComment.dislikes = [commentDictionary objectForKey:@"dislikes"];
+    aDisqusComment.rawMessage = [commentDictionary objectForKey:@"raw_message"];
+    aDisqusComment.htmlMessage = [commentDictionary objectForKey:@"message"];
+    aDisqusComment.date = [[IADisquser getThreadAwareDateFormatter] dateFromString:[[commentDictionary objectForKey:@"createdAt"] stringByReplacingOccurrencesOfString:@"T" withString:@" "]];
+    aDisqusComment.threadID = [commentDictionary objectForKey:@"thread"];
+    
+    return [aDisqusComment autorelease];
+}
+
 + (void)getCommentsWithParameters:(NSDictionary *)parameters success:(DisqusFetchCommentsSuccess)successBlock fail:(DisqusFail)failBlock {
     // make a http client for disqus
     AFHTTPClient *disqusClient = [AFHTTPClient clientWithBaseURL:[NSURL URLWithString:DISQUS_BASE_URL]];
@@ -60,37 +96,13 @@
                           if ([commentsArray count] == 0) {
                               successBlock(nil);
                           } else {
-                              // setting date format
-                              NSDateFormatter *df = [[NSDateFormatter alloc] init];
-                              NSLocale *locale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease];
-                              [df setLocale:locale];
-                              [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                              
                               // traverse the array, getting data for comments
                               for (NSDictionary *commentDictionary in commentsArray) {
                                   // for every comment, wrap them with IADisqusComment
-                                  IADisqusComment *aDisqusComment = [[IADisqusComment alloc] init];
-                                  
-                                  aDisqusComment.authorName = [[commentDictionary objectForKey:@"author"] objectForKey:@"name"];
-                                  aDisqusComment.authorAvatar = [[[commentDictionary objectForKey:@"author"] objectForKey:@"avatar"] objectForKey:@"cache"];
-                                  aDisqusComment.authorEmail = [[commentDictionary objectForKey:@"author"] objectForKey:@"email"];
-                                  aDisqusComment.authorURL = [[commentDictionary objectForKey:@"author"] objectForKey:@"url"];
-                                  aDisqusComment.ipAddress = [commentDictionary objectForKey:@"ipAddress"];
-                                  aDisqusComment.forumName = [commentDictionary objectForKey:@"forum"];
-                                  aDisqusComment.likes = [commentDictionary objectForKey:@"likes"];
-                                  aDisqusComment.dislikes = [commentDictionary objectForKey:@"dislikes"];
-                                  aDisqusComment.rawMessage = [commentDictionary objectForKey:@"raw_message"];
-                                  aDisqusComment.htmlMessage = [commentDictionary objectForKey:@"message"];
-                                  aDisqusComment.date = [df dateFromString:[[commentDictionary objectForKey:@"createdAt"] stringByReplacingOccurrencesOfString:@"T" withString:@" "]];
-                                  aDisqusComment.threadID = [commentDictionary objectForKey:@"thread"];
-                                  
+                                  IADisqusComment *aDisqusComment = [IADisquser buildCommentFromDictionary:commentDictionary];
                                   // add the comment to the mutable array
                                   [comments addObject:aDisqusComment];
-                                  [aDisqusComment release];
                               }
-                              
-                              // release date formatting
-                              [df release];
                               
                               // pass it to the block
                               successBlock(comments);
@@ -218,7 +230,8 @@
                            NSError *error = [NSError errorWithDomain:@"com.ikhsanassaat.disquser" code:27 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:errorMessage, NSLocalizedDescriptionKey, nil]];
                            failBlock(error);
                        } else {
-                           successBlock();
+                           IADisqusComment *comment = [IADisquser buildCommentFromDictionary:[responseDictionary objectForKey:@"response"]];
+                           successBlock(comment, [[[responseDictionary objectForKey:@"response"] objectForKey:@"isApproved"] boolValue]);
                        }
                    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                        NSLog(@"response : %@", [operation allHeaderFields]);
