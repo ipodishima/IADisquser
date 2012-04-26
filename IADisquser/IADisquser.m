@@ -38,9 +38,8 @@
 	if (!dateFormatter)
     {
         dateFormatter = [[NSDateFormatter alloc] init];
-        NSLocale *locale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"] autorelease];
-        [dateFormatter setLocale:locale];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         [threadDictionary setObject: dateFormatter forKey: @"IADisquserMyDateFormatter"];
 	}
     return dateFormatter;
@@ -50,6 +49,7 @@
 
 + (IADisqusComment*) buildCommentFromDictionary:(NSDictionary*)commentDictionary
 {
+    PPLog(@"%@", commentDictionary);
     IADisqusComment *aDisqusComment = [[IADisqusComment alloc] init];
     
     aDisqusComment.authorName = [[commentDictionary objectForKey:@"author"] objectForKey:@"name"];
